@@ -29,6 +29,7 @@ module.exports = function(grunt) {
 				files: {
 					'build/2dcar.js': [
 						'src/RigidBody.js',
+						'src/Wheel.js',
 						'src/Vehicle.js',
 						'src/Car.js',
 						'src/*.js'

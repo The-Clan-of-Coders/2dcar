@@ -11,6 +11,11 @@ Vec.prototype.getMagnitude = function() {
 	return Math.sqrt(this.x * this.x + this.y * this.y);
 };
 
+Vec.prototype.clear = function() {
+	this.x = 0;
+	this.y = 0;
+};
+
 Vec.add = function(vec1, vec2) {
 	return new Vec(vec1.x + vec2.x, vec1.y + vec2.y);
 };

@@ -20,6 +20,7 @@ function initGame() {
   car = new Car({ x: 10, y: 20 }, 2);
   car.position.x = 100;
   car.position.y = 100;
+  car.angle = -Math.PI/2;
 
   enemies = [];
   enemies.push(new Car({ x: 12, y: 16}, 2));
@@ -41,7 +42,16 @@ function initGame() {
   requestAnimationFrame(step);
 }
 
+function initObjects() {
+  car.initStep();
+  for (var e = 0; e < enemies.length; e++) {
+    enemies[e].initStep();
+  }
+}
+
 function step() {
+
+  initObjects();
 
 	var steering = 0;
 	var throttle = 0;
@@ -62,11 +72,8 @@ function step() {
 	car.setSteering(steering);
 	car.setThrottle(throttle);
 
-  car.update(20 / 1000);
-  for (var e = 0; e < enemies.length; e++) {
-    enemies[e].update(20 / 1000);
-  }
 
+  // check collisions for all entities
   var collided, normalVec;
 
   for (e = 0; e < enemies.length; e++) {
@@ -78,8 +85,7 @@ function step() {
         car,
         enemies[e],
         normalVec,
-        Vec.multiply(normalVec, collided.overlap),
-        car.currChassisPoints
+        Vec.multiply(normalVec, collided.overlap)
       );
     }
 
@@ -94,10 +100,15 @@ function step() {
         car,
         walls[w],
         normalVec,
-        Vec.multiply(normalVec, collided.overlap),
-        car.currChassisPoints
+        Vec.multiply(normalVec, collided.overlap)
       );
     }
+  }
+
+  // run step for all entities
+  car.update(20 / 1000);
+  for (var e = 0; e < enemies.length; e++) {
+    enemies[e].update(20 / 1000);
   }
 
   render();

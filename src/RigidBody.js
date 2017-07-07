@@ -24,6 +24,9 @@ function RigidBody(halfSize, mass, immovable) {
 	//store physical parameters
 	this.inertia = (1 / 12) * (halfSize.x * halfSize.x) * (halfSize.y * halfSize.y) * mass;
 
+	// temp variable for collision response
+	this.collisionResponse = new Vec();
+
 	//generate our viewable rectangle
 	this.rect.x = -this.halfSize.x;
 	this.rect.y = -this.halfSize.y;
@@ -56,13 +59,17 @@ RigidBody.prototype.calculateBoundaries = function() {
 
 };
 
+RigidBody.prototype.initStep = function(timeStep) {
+	this.forces.clear();
+};
+
 RigidBody.prototype.update = function(timeStep) {
 	//integrate physics
 	//linear
 	var acceleration = Vec.divide(this.forces, this.mass);
 	this.velocity = Vec.add(this.velocity, Vec.multiply(acceleration, timeStep));
 	this.position = Vec.add(this.position, Vec.multiply(this.velocity, timeStep));
-	this.forces = new Vec(0,0); //clear forces
+	//this.forces.clear(); //clear forces
 
 	//angular
 	var angAcc = this.torque / this.inertia;
