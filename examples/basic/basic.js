@@ -29,12 +29,12 @@ function initGame() {
 
   walls = [];
 
-  walls.push(new RigidBody({ x: 40, y: 40 }, 10000, true));
+  walls.push(new RigidBody({ x: 40, y: 40 }, 1000, true));
 	walls[walls.length - 1].position.x = 300;
 	walls[walls.length - 1].position.y = 300;
   walls[walls.length - 1].calculateBoundaries();
 
-  walls.push(new RigidBody({ x: 400, y: 40 }, 10000, true));
+  walls.push(new RigidBody({ x: 400, y: 40 }, 1000, true));
 	walls[walls.length - 1].position.x = 500;
 	walls[walls.length - 1].position.y = 500;
   walls[walls.length - 1].calculateBoundaries();

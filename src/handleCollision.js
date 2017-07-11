@@ -3,8 +3,8 @@ function applyCollision(car1, car2, collisionV, overlapV) {
 
 	// separate cars
 	if (car2.immovable) {
-		car1.position.x -= overlapV.x * 1.1;
-		car1.position.y -= overlapV.y * 1.1;
+		car1.position.x -= overlapV.x;
+		car1.position.y -= overlapV.y;
 	}
 	else {
 		car1.position.x -= overlapV.x;
@@ -34,7 +34,7 @@ function applyCollision(car1, car2, collisionV, overlapV) {
 	// Apply impulse
 	var impulse = Vec.multiply(collisionV, j);
   // point of collision
-	var cp = { x: (car1.position.x - car2.position.x) / 2, y: (car1.position.y - car2.position.y) / 2 };
+	var cp = { x: (car1.position.x + car2.position.x) / 2, y: (car1.position.y + car2.position.y) / 2 };
 
 	if (car2.immovable) {
 		// TODO: better calculation
@@ -50,16 +50,24 @@ function applyCollision(car1, car2, collisionV, overlapV) {
 		}*/
 	}
 
-	car1.velocity = car1.velocity.subtract(Vec.multiply(impulse, 1 / car1.mass));
-	car1.angularVelocity = (cp.x * rv.y - cp.y * rv.x) / (cp.x * cp.x + cp.y * cp.y);
-  //car1.addForce(Vec.multiply(impulse, 1 / car1.mass), cp);
+	//car1.velocity.x -= impulse.x ? 1 / (impulse.x * car1.mass) : 0;
+	//car1.velocity.y -= impulse.y ? 1 / (impulse.y * car1.mass) : 0;
+	car1.velocity = car1.velocity.subtract(Vec.divide(impulse, car1.mass));
+	car1.angularVelocity += (4 / car1.inertia) * Vec.crossProduct(new Vec(cp.x - car1.position.x, cp.y - car1.position.y), impulse);
+	//car1.velocity = car1.velocity.subtract(Vec.multiply(impulse, 1 / car1.mass));
+	//car1.angularVelocity = (cp.x * rv.y - cp.y * rv.x) / (cp.x * cp.x + cp.y * cp.y);
+  //car1.addForce(Vec.multiply(impulse, -1), new Vec(car2.x, car2.y));
 	car1.handleCollision();
 
 
 	if (!car2.immovable) {
-		car2.velocity = car2.velocity.add(Vec.multiply(impulse, 1 / car2.mass));
-		car2.angularVelocity = (cp.x * -rv.y - cp.y * -rv.x) / (cp.x * cp.x + cp.y * cp.y);
-    //car2.addForce(Vec.multiply(impulse, 1 / car2.mass), cp);
+		//car2.velocity.x += impulse.x ? 1 / (impulse.x * car2.mass) : 0;
+		//car2.velocity.y += impulse.y ? 1 / (impulse.y * car2.mass) : 0;
+		car2.velocity = car2.velocity.add(Vec.divide(impulse, car2.mass));
+		car2.angularVelocity += (4 / car2.inertia) * Vec.crossProduct(new Vec(cp.x - car2.position.x, cp.y - car2.position.y), impulse);
+		//car2.velocity = car2.velocity.add(Vec.multiply(impulse, 1 / car2.mass));
+		//car2.angularVelocity = (cp.x * -rv.y - cp.y * -rv.x) / (cp.x * cp.x + cp.y * cp.y);
+    //car2.addForce(impulse, new Vec(car1.x, car1.y));
 		car2.handleCollision();
 	}
 

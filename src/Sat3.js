@@ -14,7 +14,8 @@ function checkCollision3(points1, points2) {
 		MNx = null,
 		MNy = null,
 		dot,
-		nextPoint;
+		nextPoint,
+		contactPoint;
 
 	//loop through the edges of Polygon 1
 	for (i=0; i < points1.length; i++) {
@@ -110,6 +111,7 @@ function checkCollision3(points1, points2) {
 
 	return {
 		overlap: MTV,
-		normal: new Vec(MNx, MNy)
+		normal: new Vec(MNx, MNy),
+		contactPoint: contactPoint
 	};
 }
