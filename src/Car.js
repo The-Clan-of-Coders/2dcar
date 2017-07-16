@@ -34,15 +34,45 @@ Car.prototype.constructor = Car;
 
 Car.prototype.drawBody = function(ctx, color) {
 
-  ctx.fillStyle = color || '#393';
+	ctx.save();
+	ctx.translate(this.position.x, this.position.y);
+	ctx.rotate(this.angle);
 
+	// tires
+	var w = 7;
+	var h = w*2;
+	ctx.fillStyle = '#333';
+
+	ctx.fillRect(-this.halfSize.x - w/2, -this.halfSize.y - h/2, w, h);
+	ctx.fillRect(this.halfSize.x - w/2, -this.halfSize.y - h/2, w, h);
+
+	var dx = this.halfSize.x;
+	var dy = this.halfSize.y;
+
+	ctx.translate(dx, dy);
+	ctx.rotate(this.steering);
+	ctx.fillRect(-w/2, -h/2, w, h);
+	ctx.rotate(-this.steering);
+	ctx.translate(-dx, -dy);
+
+	ctx.translate(-dx, dy);
+	ctx.rotate(this.steering);
+	ctx.fillRect(-w/2, -h/2, w, h);
+	ctx.rotate(-this.steering);
+	ctx.translate(dx, -dy);
+
+	// chasis
+	ctx.fillStyle = color || '#393';
   ctx.beginPath();
-  ctx.moveTo(this.currChassisPoints[0].x, this.currChassisPoints[0].y);
-  for (var i = 1; i < this.currChassisPoints.length; i++) {
-    ctx.lineTo(this.currChassisPoints[i].x, this.currChassisPoints[i].y);
+  ctx.moveTo(this.origChassisPoints[0].x, this.origChassisPoints[0].y);
+  for (var i = 1; i < this.origChassisPoints.length; i++) {
+    ctx.lineTo(this.origChassisPoints[i].x, this.origChassisPoints[i].y);
   }
   ctx.closePath();
   ctx.fill();
+
+
+	ctx.restore();
 
 };
 

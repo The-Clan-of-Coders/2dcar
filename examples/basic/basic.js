@@ -147,7 +147,7 @@ function render() {
     enemies[e].drawBody(ctx, '#339');
   }
 
-  // draw cars
+  // draw car
   car.drawBody(ctx);
 
   // fps

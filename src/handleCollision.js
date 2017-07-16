@@ -1,10 +1,16 @@
 
 function applyCollision(car1, car2, collisionV, overlapV) {
 
+	// point of collision
+	var cp = { x: (car1.position.x + car2.position.x) / 2, y: (car1.position.y + car2.position.y) / 2 };
+
 	// separate cars
 	if (car2.immovable) {
 		car1.position.x -= overlapV.x;
 		car1.position.y -= overlapV.y;
+
+		//: TODO: do this better
+		cp = { x: car1.position.x - overlapV.x, y: car1.position.y - overlapV.y };
 	}
 	else {
 		car1.position.x -= overlapV.x;
@@ -33,22 +39,6 @@ function applyCollision(car1, car2, collisionV, overlapV) {
 
 	// Apply impulse
 	var impulse = Vec.multiply(collisionV, j);
-  // point of collision
-	var cp = { x: (car1.position.x + car2.position.x) / 2, y: (car1.position.y + car2.position.y) / 2 };
-
-	if (car2.immovable) {
-		// TODO: better calculation
-		// wall
-    cp.x = car1.position.x;
-    cp.y = car1.position.y;
-
-		/*if (cp.x > cp.y) {
-			cp.x = car1.position.x;
-		}
-		else {
-			cp.y = car1.position.y;
-		}*/
-	}
 
 	//car1.velocity.x -= impulse.x ? 1 / (impulse.x * car1.mass) : 0;
 	//car1.velocity.y -= impulse.y ? 1 / (impulse.y * car1.mass) : 0;
@@ -58,7 +48,6 @@ function applyCollision(car1, car2, collisionV, overlapV) {
 	//car1.angularVelocity = (cp.x * rv.y - cp.y * rv.x) / (cp.x * cp.x + cp.y * cp.y);
   //car1.addForce(Vec.multiply(impulse, -1), new Vec(car2.x, car2.y));
 	car1.handleCollision();
-
 
 	if (!car2.immovable) {
 		//car2.velocity.x += impulse.x ? 1 / (impulse.x * car2.mass) : 0;

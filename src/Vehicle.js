@@ -10,6 +10,7 @@ function Vehicle(halfSize, mass) {
 	RigidBody.call(this, halfSize, mass);
 
   this.wheels = [];
+	this.steering = 0;
 
 	//front wheels
 	this.wheels[0] = new Wheel(new Vec(halfSize.x, halfSize.y), 0.5);
@@ -34,9 +35,10 @@ Vehicle.prototype.handleCollision = function() {
 Vehicle.prototype.setSteering = function(steering) {
 	var steeringLock = 0.75;
 
+	this.steering = -steering * steeringLock;
 	//apply steering angle to front wheels
-	this.wheels[0].setSteeringAngle(-steering * steeringLock);
-	this.wheels[1].setSteeringAngle(-steering * steeringLock);
+	this.wheels[0].setSteeringAngle(this.steering);
+	this.wheels[1].setSteeringAngle(this.steering);
 };
 
 Vehicle.prototype.setThrottle = function(throttle, allWheel) {

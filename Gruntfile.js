@@ -47,8 +47,7 @@ module.exports = function(grunt) {
 		uglify: {
 			my_target: {
 				files: {
-					'dist/derby.min.js': ['dist/derby.js'],
-					'../js-game-server/examples/derby/game/derby.min.js': ['dist/derby.js']
+					'build/2dcar.min.js': ['build/2dcar.js']
 				}
 			}
 		}
@@ -61,7 +60,7 @@ module.exports = function(grunt) {
 		'watch'
 	]);
 
-	grunt.registerTask('build', ['jshint', 'concat']);
+	grunt.registerTask('build', ['jshint', 'concat', 'uglify']);
 	grunt.registerTask('default', ['build', 'http-server', 'monitor']);
 
 };
