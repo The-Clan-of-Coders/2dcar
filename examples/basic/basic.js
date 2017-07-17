@@ -1,5 +1,5 @@
 
-var canvas, ctx, car, enemies, walls;
+var canvas, ctx, playerCar, enemies, walls;
 
 var lastCalledTime, fps;
 
@@ -17,10 +17,10 @@ function initGame() {
 
 	resizeCanvas();
 
-  car = new Car({ x: 10, y: 20 }, 2);
-  car.position.x = 100;
-  car.position.y = 100;
-  car.angle = -Math.PI/2;
+  playerCar = new Car({ x: 10, y: 20 }, 2);
+  playerCar.position.x = 100;
+  playerCar.position.y = 100;
+  playerCar.angle = -Math.PI/2;
 
   enemies = [];
   enemies.push(new Car({ x: 12, y: 16}, 2));
@@ -28,6 +28,16 @@ function initGame() {
   enemies[enemies.length - 1].position.y = 100;
 
   walls = [];
+
+  walls.push(new RigidBody({ x: 20, y: 1400 }, 1000, true));
+	walls[walls.length - 1].position.x = 10;
+	walls[walls.length - 1].position.y = 700;
+  walls[walls.length - 1].calculateBoundaries();
+
+  walls.push(new RigidBody({ x: 1400, y: 20 }, 1000, true));
+	walls[walls.length - 1].position.x = 700;
+	walls[walls.length - 1].position.y = 10;
+  walls[walls.length - 1].calculateBoundaries();
 
   walls.push(new RigidBody({ x: 40, y: 40 }, 1000, true));
 	walls[walls.length - 1].position.x = 300;
@@ -43,7 +53,7 @@ function initGame() {
 }
 
 function initObjects() {
-  car.initStep();
+  playerCar.initStep();
   for (var e = 0; e < enemies.length; e++) {
     enemies[e].initStep();
   }
@@ -55,7 +65,7 @@ function step() {
 
 	var steering = 0;
 	var throttle = 0;
-	if (!car.dead) {
+	if (!playerCar.dead) {
 		if (KEY_LEFT) {
 			steering += 1;
 		}
@@ -69,45 +79,28 @@ function step() {
 			throttle -= 1;
 		}
 	}
-	car.setSteering(steering);
-	car.setThrottle(throttle);
+	playerCar.setSteering(steering);
+	playerCar.setThrottle(throttle);
 
 
   // check collisions for all entities
   var collided, normalVec;
 
+  var e;
   for (e = 0; e < enemies.length; e++) {
-    collided = checkCollision3(car.currChassisPoints, enemies[e].currChassisPoints);
-    if (collided) {
-      normalVec = new Vec(collided.normal.x, collided.normal.y);
-      normalVec.normalize();
-      impact = applyCollision(
-        car,
-        enemies[e],
-        normalVec,
-        Vec.multiply(normalVec, collided.overlap)
-      );
-    }
-
+    checkCollision3(playerCar, enemies[e], true);
   }
 
   for (var w = 0; w < walls.length; w++) {
-    collided = checkCollision3(car.currChassisPoints, walls[w].boundaries);
-    if (collided) {
-      normalVec = new Vec(collided.normal.x, collided.normal.y);
-      normalVec.normalize();
-      impact = applyCollision(
-        car,
-        walls[w],
-        normalVec,
-        Vec.multiply(normalVec, collided.overlap)
-      );
+    checkCollision3(playerCar, walls[w], true);
+    for (e = 0; e < enemies.length; e++) {
+      checkCollision3(enemies[e], walls[w], true);
     }
   }
 
   // run step for all entities
-  car.update(20 / 1000);
-  for (var e = 0; e < enemies.length; e++) {
+  playerCar.update(20 / 1000);
+  for (e = 0; e < enemies.length; e++) {
     enemies[e].update(20 / 1000);
   }
 
@@ -127,13 +120,14 @@ function render() {
   lastCalledTime = Date.now();
   fps = 1/delta;
 
+  ctx.translate(-playerCar.position.x + canvas.width/2, -playerCar.position.y + canvas.height/2);
 
   // clear rect
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.clearRect(playerCar.position.x - canvas.width/2, playerCar.position.y - canvas.height/2, canvas.width, canvas.height);
 
   // draw walls
   for (var i = 0; i < walls.length; i++) {
-    ctx.fillStyle = '#933';
+    ctx.fillStyle = '#f66';
     ctx.fillRect(
       walls[i].position.x - walls[i].halfSize.x,
       walls[i].position.y - walls[i].halfSize.y,
@@ -144,11 +138,13 @@ function render() {
 
   // draw other cars
   for (var e = 0; e < enemies.length; e++) {
-    enemies[e].drawBody(ctx, '#339');
+    enemies[e].drawBody(ctx, '#66f');
   }
 
   // draw car
-  car.drawBody(ctx);
+  playerCar.drawBody(ctx);
+
+  ctx.translate(playerCar.position.x - canvas.width/2, playerCar.position.y - canvas.height/2);
 
   // fps
   ctx.font = "14px Courier";

@@ -4,7 +4,7 @@
  * Based on the collision engine from Crafty.js
  */
 
-function checkCollision3(points1, points2) {
+function checkCollision3(obj1, obj2, applyResult) {
 	var i, j,
 		edgeNormal,
 		min1, min2,
@@ -16,6 +16,9 @@ function checkCollision3(points1, points2) {
 		dot,
 		nextPoint,
 		contactPoint;
+
+	var points1 = obj1.currChassisPoints || obj1.boundaries;
+	var points2 = obj2.currChassisPoints || obj2.boundaries;
 
 	//loop through the edges of Polygon 1
 	for (i=0; i < points1.length; i++) {
@@ -109,9 +112,15 @@ function checkCollision3(points1, points2) {
 		}
 	}
 
-	return {
+	var result = {
 		overlap: MTV,
 		normal: new Vec(MNx, MNy),
 		contactPoint: contactPoint
 	};
+
+	if (applyResult) {
+    applyCollision(obj1, obj2, result.normal, result.overlap);
+	}
+
+	return result;
 }

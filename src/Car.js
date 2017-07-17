@@ -62,7 +62,7 @@ Car.prototype.drawBody = function(ctx, color) {
 	ctx.translate(dx, -dy);
 
 	// chasis
-	ctx.fillStyle = color || '#393';
+	ctx.fillStyle = color || '#6F6';
   ctx.beginPath();
   ctx.moveTo(this.origChassisPoints[0].x, this.origChassisPoints[0].y);
   for (var i = 1; i < this.origChassisPoints.length; i++) {

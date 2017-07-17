@@ -1,5 +1,10 @@
 
-function applyCollision(car1, car2, collisionV, overlapV) {
+function applyCollision(car1, car2, normalVec, overlap) {
+
+	var overlapV = Vec.multiply(normalVec, overlap);
+
+	var collisionV = new Vec(normalVec.x, normalVec.y);
+	collisionV.normalize();
 
 	// point of collision
 	var cp = { x: (car1.position.x + car2.position.x) / 2, y: (car1.position.y + car2.position.y) / 2 };
